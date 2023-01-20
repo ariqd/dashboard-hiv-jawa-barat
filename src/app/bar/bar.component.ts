@@ -18,9 +18,7 @@ export class BarComponent implements OnInit {
     d3.json(
       'https://opendata.jabarprov.go.id/api-backend/bigdata/dinkes/od_17570_jumlah_kasus_hiv_berdasarkan_kelompok_umur'
     ).then((data: any) => {
-      // console.log(data)
       const chartData = data as ChartDataType[];
-      // console.log(JSON.stringify(chartData));
       this.drawBars(chartData);
     });
   }
