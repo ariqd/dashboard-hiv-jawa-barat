@@ -9,7 +9,6 @@ import * as d3 from 'd3';
 export class BarComponent implements OnInit {
   ngOnInit(): void {
     this.createSvg();
-    // this.drawBars(this.data);
     // Fetch JSON from an external endpoint
     type ChartDataType = {
       data: Array<Object>;
@@ -25,13 +24,6 @@ export class BarComponent implements OnInit {
       this.drawBars(chartData);
     });
   }
-  private data = [
-    { Framework: 'Vue', Stars: '166443', Released: 2014 },
-    { Framework: 'React', Stars: '150793', Released: 2013 },
-    { Framework: 'Angular', Stars: '62342', Released: 2016 },
-    { Framework: 'Backbone', Stars: '27647', Released: 2010 },
-    { Framework: 'Ember', Stars: '21471', Released: 2011 },
-  ];
 
   private svg: any;
   private margin = 50;
