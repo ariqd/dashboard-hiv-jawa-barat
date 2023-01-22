@@ -1,6 +1,8 @@
+/// <reference types="@types/google.maps" />
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 @Component({
   selector: 'app-map',
@@ -108,28 +110,46 @@ export class MapComponent implements OnInit {
       });
     }
 
-    this.http.get('https://opendata.jabarprov.go.id/api-backend/bigdata/dinkes/od_18510_jumlah_kasus_hiv_berdasarkan_kabupatenkota').subscribe((mapResponse: any) => {
-      let mapArray = [];
+    this.http
+      .get(
+        'https://opendata.jabarprov.go.id/api-backend/bigdata/dinkes/od_18510_jumlah_kasus_hiv_berdasarkan_kabupatenkota'
+      )
+      .subscribe((mapResponse: any) => {
+        let mapArray = [];
 
-      const result = mapResponse.data.reduce(function (
-        r: any,
-        a: any
-      ) {
-        r[a.nama_kabupaten_kota] = r[a.nama_kabupaten_kota] || [];
-        r[a.nama_kabupaten_kota].push({
-          'jumlah_kasus': a.jumlah_kasus,
-          'tahun': a.tahun
+        const result = mapResponse.data.reduce(function (r: any, a: any) {
+          r[a.nama_kabupaten_kota] = r[a.nama_kabupaten_kota] || [];
+          r[a.nama_kabupaten_kota].push({
+            jumlah_kasus: a.jumlah_kasus,
+            tahun: a.tahun,
+          });
+          return r;
+        }, []);
+
+        Object.keys(result).map((key) => {
+          const sum = result[key].reduce(
+            (total: any, item: any) => total + parseInt(item.jumlah_kasus),
+            0
+          );
+
+          const provider = new OpenStreetMapProvider();
+
+          provider.search({ query: key }).then(function (result) {
+            mapArray.push({
+              KabupatenKota: key,
+              JumlahKasus: sum,
+              result: result,
+            });
+          });
+
+          // mapArray.push({
+          //   KabupatenKota: key,
+          //   JumlahKasus: sum,
+          //   // result: queryResponse,
+          // });
         });
-        return r;
-      }, []);
 
-      Object.keys(result).map((key) => {
-        const sum = result[key].reduce((total: any, item: any) => total + parseInt(item.jumlah_kasus), 0);
-        mapArray.push({
-          KabupatenKota: key,
-          JumlahKasus: sum
-        })
-      })
-    });
+        console.log(mapArray);
+      });
   }
 }
