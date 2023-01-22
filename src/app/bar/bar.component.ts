@@ -19,7 +19,23 @@ export class BarComponent implements OnInit {
       'https://opendata.jabarprov.go.id/api-backend/bigdata/dinkes/od_17570_jumlah_kasus_hiv_berdasarkan_kelompok_umur'
     ).then((data: any) => {
       const chartData = data as ChartDataType[];
-      this.drawBars(chartData);
+      const result = JSON.parse(JSON.stringify(chartData)).data.reduce(function (
+        r: any,
+        a: any
+      ) {
+        r[a.kelompok_umur] = r[a.kelompok_umur] || [];
+        r[a.kelompok_umur].push(a.jumlah_kasus);
+        return r;
+      },
+      Object.create(null));
+
+      const barChartData = Object.keys(result).reduce(function (previous, key) {
+        const sum = result[key].reduce((total: any, item: any) => total + item);
+        result[key] = sum;
+        return result;
+      }, []);
+
+      this.drawBars(barChartData);
     });
   }
 
@@ -38,28 +54,12 @@ export class BarComponent implements OnInit {
       .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
   }
 
-  private drawBars(data: any[]): void {
-    const result = JSON.parse(JSON.stringify(data)).data.reduce(function (
-      r: any,
-      a: any
-    ) {
-      r[a.kelompok_umur] = r[a.kelompok_umur] || [];
-      r[a.kelompok_umur].push(a.jumlah_kasus);
-      return r;
-    },
-    Object.create(null));
-
-    const bars = Object.keys(result).reduce(function (previous, key) {
-      const sum = result[key].reduce((total: any, item: any) => total + item);
-      result[key] = sum;
-      return result;
-    }, []);
-
+  private drawBars(barChartData: any[]): void {
     // Create the X-axis band scale
     const x = d3
       .scaleBand()
       .range([0, this.width])
-      .domain(Object.entries(bars).map((d: any) => d[0]))
+      .domain(Object.entries(barChartData).map((d: any) => d[0]))
       .padding(0.2);
 
     // Draw the X-axis on the DOM
@@ -80,7 +80,7 @@ export class BarComponent implements OnInit {
     // Create and fill the bars
     this.svg
       .selectAll('bars')
-      .data(Object.entries(bars))
+      .data(Object.entries(barChartData))
       .enter()
       .append('rect')
       .attr('x', (d: any) => x(d[0]))
