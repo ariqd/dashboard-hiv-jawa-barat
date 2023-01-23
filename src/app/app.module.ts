@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { BarComponent } from './bar/bar.component';
 import { PieComponent } from './pie/pie.component';
 import { BarCitiesComponent } from './barCities/barCities.component';
+import { LineComponent } from './line/line.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BarComponent,
     PieComponent,
-    BarCitiesComponent
+    BarCitiesComponent,
+    LineComponent
   ],
   imports: [
     BrowserModule,

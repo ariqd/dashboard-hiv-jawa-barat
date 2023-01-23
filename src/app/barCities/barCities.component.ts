@@ -42,7 +42,6 @@ export class BarCitiesComponent implements OnInit {
           });
         });
 
-        // console.log(mapArray);
         this.drawBars(mapArray);
       });
   }
@@ -67,7 +66,6 @@ export class BarCitiesComponent implements OnInit {
 
   private drawBars(barChartData: any[]): void {
     barChartData = barChartData.sort((a, b) => b.JumlahKasus - a.JumlahKasus);
-    console.log(barChartData);
 
     var x = d3.scaleLinear().domain([0, 2000]).range([0, this.width]);
     this.svg
