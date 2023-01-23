@@ -5,14 +5,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppComponent } from './app.component';
 import { BarComponent } from './bar/bar.component';
 import { PieComponent } from './pie/pie.component';
-import { MapComponent } from './map/map.component';
+import { BarCitiesComponent } from './barCities/barCities.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BarComponent,
     PieComponent,
-    MapComponent
+    BarCitiesComponent
   ],
   imports: [
     BrowserModule,
